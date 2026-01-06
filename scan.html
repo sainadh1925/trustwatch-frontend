@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan - TrustWatch</title>
+    <meta name="description" content="Scan URLs, emails, and SMS messages for phishing threats">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/scan-enhanced.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">🛡️ TrustWatch</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="scan.html">Scan Now</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Scan Section -->
+    <section class="scan-section">
+        <div class="container">
+            <h1 class="text-center mb-4">Scan for Phishing Threats</h1>
+            <p class="text-center mb-4">Choose what you want to scan and get instant threat analysis</p>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" data-tab="url">🔗 URL</button>
+                <button class="tab" data-tab="email">📧 Email</button>
+                <button class="tab" data-tab="sms">📱 SMS</button>
+            </div>
+
+            <!-- URL Scan Tab -->
+            <div class="tab-content active" id="url-tab">
+                <div class="card">
+                    <form id="url-form">
+                        <div class="form-group">
+                            <label for="url-input">Enter URL to scan</label>
+                            <input type="url" id="url-input" placeholder="https://example.com" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-large">Scan URL</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Email Scan Tab -->
+            <div class="tab-content" id="email-tab">
+                <div class="card">
+                    <form id="email-form">
+                        <div class="form-group">
+                            <label for="email-input">Paste email content</label>
+                            <textarea id="email-input" placeholder="Paste the email content here..."
+                                required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="email-language">Language</label>
+                            <select id="email-language">
+                                <option value="english">English</option>
+                                <option value="hindi">Hindi (हिंदी)</option>
+                                <option value="tamil">Tamil (தமிழ்)</option>
+                                <option value="telugu">Telugu (తెలుగు)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-large">Scan Email</button>
+                    </form>
+
+                    <!-- Email Sharing Guide -->
+                    <div class="email-guide">
+                        <h4>💡 How to Share Suspicious Emails</h4>
+                        <ol>
+                            <li>Open the suspicious email in your email client</li>
+                            <li>Select all the email content (Ctrl+A or Cmd+A)</li>
+                            <li>Copy the content (Ctrl+C or Cmd+C)</li>
+                            <li>Paste it into the text area above</li>
+                            <li>Click "Scan Email" to analyze for threats</li>
+                        </ol>
+                        <p style="margin-top: 12px; font-size: 14px; color: #667eea;">
+                            <strong>Tip:</strong> Include email headers for better detection accuracy!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SMS Scan Tab -->
+            <div class="tab-content" id="sms-tab">
+                <div class="card">
+                    <form id="sms-form">
+                        <div class="form-group">
+                            <label for="sms-input">Paste SMS message</label>
+                            <textarea id="sms-input" placeholder="Paste the SMS message here..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="sms-language">Language</label>
+                            <select id="sms-language">
+                                <option value="english">English</option>
+                                <option value="hindi">Hindi (हिंदी)</option>
+                                <option value="tamil">Tamil (தமிழ்)</option>
+                                <option value="telugu">Telugu (తెలుగు)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-large">Scan SMS</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing for threats...</p>
+                <div class="scan-progress">
+                    <div class="scan-progress-bar" id="progress-bar"></div>
+                </div>
+            </div>
+
+            <!-- Results Display -->
+            <div class="results" id="results">
+                <div class="card">
+                    <h2 class="mb-3">Scan Results</h2>
+
+                    <!-- Threat Score -->
+                    <div class="threat-score">
+                        <div class="score-circle" id="score-circle">
+                            <span id="score-value">0</span>
+                        </div>
+                        <h3 id="risk-level">Risk Level</h3>
+                        <span class="risk-badge" id="risk-badge">Low</span>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="mt-4">
+                        <h4>Analysis Details</h4>
+                        <p id="recommendation" class="mt-2"></p>
+                        <p class="mt-2" style="font-size: 14px; color: var(--text-tertiary);">
+                            Response Time: <strong id="response-time">0ms</strong> |
+                            Confidence: <strong id="confidence">0%</strong>
+                        </p>
+                    </div>
+
+                    <!-- Indicators -->
+                    <div class="indicators mt-4" id="indicators-section">
+                        <h4>Detected Indicators</h4>
+                        <ul id="indicators-list"></ul>
+                    </div>
+
+                    <!-- Additional Details -->
+                    <div class="mt-4" id="details-section">
+                        <h4>Additional Information</h4>
+                        <div id="details-content"></div>
+                    </div>
+
+                    <!-- Scan Again Button -->
+                    <div class="mt-4 text-center">
+                        <button class="btn btn-secondary" onclick="resetScan()">Scan Another</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 TrustWatch. Real-Time AI/ML-Based Phishing Detection System.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/scanner.js"></script>
+</body>
+
+</html>

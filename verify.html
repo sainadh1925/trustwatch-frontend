@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification - TrustWatch</title>
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+
+<body>
+    <div class="auth-container">
+        <button class="back-button" onclick="window.location.href='signup.html'">←</button>
+
+        <div class="auth-card">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12 2L4 6v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6l-8-4zm0 18.5c-4.28-1.04-7-5.46-7-10.5V7.5l7-3.5 7 3.5V10c0 5.04-2.72 9.46-7 10.5z" />
+                    <path d="M10.5 13.5l-2-2-1.41 1.41L10.5 16.5l6-6-1.41-1.41z" />
+                </svg>
+            </div>
+
+            <h2>Email Verification</h2>
+            <p class="subtitle">Enter the 6-digit code sent to<br><strong id="user-email"></strong></p>
+
+            <div id="error-message" class="error-message" style="display: none;"></div>
+            <div id="success-message" class="success-message" style="display: none;"></div>
+
+            <form id="verify-form">
+                <div class="code-inputs">
+                    <input type="text" class="code-input" maxlength="1" id="code-1" required>
+                    <input type="text" class="code-input" maxlength="1" id="code-2" required>
+                    <input type="text" class="code-input" maxlength="1" id="code-3" required>
+                    <input type="text" class="code-input" maxlength="1" id="code-4" required>
+                    <input type="text" class="code-input" maxlength="1" id="code-5" required>
+                    <input type="text" class="code-input" maxlength="1" id="code-6" required>
+                </div>
+
+                <div class="resend-code">
+                    Resend code in: <strong id="timer">55s</strong>
+                </div>
+
+                <button type="submit" class="btn-auth btn-primary-auth" id="verify-btn">
+                    Verify & Continue
+                </button>
+            </form>
+
+            <div class="auth-link">
+                <a href="login.html">Change email address</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+        const email = localStorage.getItem('pending_email') || '';
+        const expectedCode = localStorage.getItem('verification_code') || '';
+
+        document.getElementById('user-email').textContent = email;
+
+        // Auto-focus and auto-advance code inputs
+        const codeInputs = document.querySelectorAll('.code-input');
+        codeInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < codeInputs.length - 1) {
+                    codeInputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                    codeInputs[index - 1].focus();
+                }
+            });
+        });
+
+        // Focus first input
+        codeInputs[0].focus();
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        function hideMessages() {
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+        }
+
+        document.getElementById('verify-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideMessages();
+
+            // Get code from inputs
+            const code = Array.from(codeInputs).map(input => input.value).join('');
+            const verifyBtn = document.getElementById('verify-btn');
+
+            if (code.length !== 6) {
+                showError('Please enter all 6 digits');
+                return;
+            }
+
+            verifyBtn.innerHTML = '<span class="spinner-auth"></span> Verifying...';
+            verifyBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/verify`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, code })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showSuccess('Email verified successfully!');
+                    localStorage.removeItem('pending_email');
+                    localStorage.removeItem('verification_code');
+
+                    // Redirect to login after 1 second
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1000);
+                } else {
+                    showError(data.error || 'Verification failed');
+                    verifyBtn.innerHTML = 'Verify & Continue';
+                    verifyBtn.disabled = false;
+                }
+            } catch (error) {
+                showError('Unable to connect to server. Please make sure the backend is running.');
+                verifyBtn.innerHTML = 'Verify & Continue';
+                verifyBtn.disabled = false;
+            }
+        });
+
+        // Timer countdown
+        let timeLeft = 55;
+        const timerElement = document.getElementById('timer');
+        const countdown = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = timeLeft + 's';
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                timerElement.parentElement.innerHTML = '<button onclick="resendCode()">Resend Code</button>';
+            }
+        }, 1000);
+
+        function resendCode() {
+            alert('Resend code functionality would be implemented here');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription - TrustWatch</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <style>
+        body {
+            background: #F8F9FA;
+        }
+
+        .subscription-header {
+            background: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid #E5E5EA;
+        }
+
+        .subscription-header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .subscription-content {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .plan-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 2px solid #E5E5EA;
+            transition: all 0.3s;
+        }
+
+        .plan-card.recommended {
+            border-color: #1DB5A0;
+            background: linear-gradient(135deg, rgba(29, 181, 160, 0.05) 0%, rgba(29, 181, 160, 0.02) 100%);
+        }
+
+        .plan-badge {
+            display: inline-block;
+            background: #1DB5A0;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .plan-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .plan-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1DB5A0;
+            margin-bottom: 4px;
+        }
+
+        .plan-price span {
+            font-size: 16px;
+            color: #86868B;
+            font-weight: 400;
+        }
+
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .plan-features li {
+            padding: 10px 0;
+            font-size: 14px;
+            color: #1D1D1F;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .plan-features li:before {
+            content: "✓";
+            color: #1DB5A0;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .plan-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .plan-btn.primary {
+            background: #4F7CFF;
+            color: white;
+        }
+
+        .plan-btn.primary:hover {
+            background: #3D63E5;
+            transform: translateY(-1px);
+        }
+
+        .plan-btn.secondary {
+            background: #F0F0F0;
+            color: #1D1D1F;
+        }
+
+        .plan-btn.secondary:hover {
+            background: #E5E5EA;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="subscription-header">
+        <button class="back-button" onclick="window.location.href='settings.html'" style="position: static;">←</button>
+        <h1>Choose Your Plan</h1>
+    </div>
+
+    <div class="subscription-content">
+        <p style="text-align: center; color: #86868B; margin-bottom: 24px;">
+            Select the protection level that's right for you
+        </p>
+
+        <!-- Free Plan -->
+        <div class="plan-card">
+            <h3>Free</h3>
+            <div class="plan-price">₹0 <span>/month</span></div>
+            <ul class="plan-features">
+                <li>Real-time phishing detection</li>
+                <li>Manual URL scanning</li>
+                <li>Up to 10 scans per day</li>
+                <li>Email support</li>
+            </ul>
+            <button class="plan-btn secondary" onclick="selectPlan('free')">
+                Continue with Free
+            </button>
+        </div>
+
+        <!-- Premium Plan -->
+        <div class="plan-card recommended">
+            <span class="plan-badge">Most Popular</span>
+            <h3>Premium</h3>
+            <div class="plan-price">₹299 <span>/month</span></div>
+            <ul class="plan-features">
+                <li>Advanced AI detection</li>
+                <li>Unlimited SMS & Email scanning</li>
+                <li>Unlimited scans</li>
+                <li>Priority support</li>
+                <li>Multi-language support</li>
+                <li>Threat intelligence reports</li>
+            </ul>
+            <button class="plan-btn primary" onclick="selectPlan('premium')">
+                Upgrade to Premium
+            </button>
+        </div>
+
+        <p style="text-align: center; font-size: 12px; color: #86868B; margin-top: 20px;">
+            You can cancel or change your plan at any time
+        </p>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+        const sessionToken = localStorage.getItem('session_token');
+
+        if (!sessionToken) {
+            window.location.href = 'login.html';
+        }
+
+        async function selectPlan(plan) {
+            if (plan === 'free') {
+                window.location.href = 'home.html';
+                return;
+            }
+
+            // For premium, show payment page
+            if (confirm(`Upgrade to Premium for ₹299/month?\n\nThis is a demo - no actual payment will be processed.`)) {
+                try {
+                    const response = await fetch(`${API_URL}/api/user/subscription`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${sessionToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ plan: 'premium' })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Update local storage
+                        const user = JSON.parse(localStorage.getItem('user') || '{}');
+                        user.subscription_plan = 'premium';
+                        localStorage.setItem('user', JSON.stringify(user));
+
+                        alert('Successfully upgraded to Premium! 🎉');
+                        window.location.href = 'home.html';
+                    } else {
+                        alert('Upgrade failed. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error upgrading subscription:', error);
+                    alert('Unable to connect to server.');
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

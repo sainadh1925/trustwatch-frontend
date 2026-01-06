@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - TrustWatch</title>
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+
+<body>
+    <div class="auth-container">
+        <button class="back-button" onclick="window.location.href='login.html'">←</button>
+
+        <div class="auth-card">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12 2L4 6v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6l-8-4zm0 18.5c-4.28-1.04-7-5.46-7-10.5V7.5l7-3.5 7 3.5V10c0 5.04-2.72 9.46-7 10.5z" />
+                    <path d="M10.5 13.5l-2-2-1.41 1.41L10.5 16.5l6-6-1.41-1.41z" />
+                </svg>
+            </div>
+
+            <h2>Create Account</h2>
+            <p class="subtitle">Start your comprehensive protection today</p>
+
+            <div id="error-message" class="error-message" style="display: none;"></div>
+            <div id="success-message" class="success-message" style="display: none;"></div>
+
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="full-name">Full Name</label>
+                    <input type="text" id="full-name" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="name@company.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="password" placeholder="Create a strong password" required
+                            minlength="6">
+                        <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="confirm-password" placeholder="Confirm your password" required
+                            minlength="6">
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-auth btn-primary-auth" id="signup-btn">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="auth-link">
+                Already have an account? <a href="login.html">Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        function hideMessages() {
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+        }
+
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideMessages();
+
+            const fullName = document.getElementById('full-name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const signupBtn = document.getElementById('signup-btn');
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+
+            signupBtn.innerHTML = '<span class="spinner-auth"></span> Creating account...';
+            signupBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        full_name: fullName,
+                        email,
+                        password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store email for verification page
+                    localStorage.setItem('pending_email', email);
+
+                    // Show appropriate message based on email delivery status
+                    if (data.email_sent) {
+                        // Email sent successfully - don't show code
+                        showSuccess(`Account created! Please check your email (${email}) for the verification code.`);
+                    } else {
+                        // Email failed - show code as fallback
+                        if (data.verification_code) {
+                            localStorage.setItem('verification_code', data.verification_code);
+                            showSuccess(`Account created! Verification code: ${data.verification_code}`);
+                        } else {
+                            showSuccess(`Account created! Please check your email (${email}) for the verification code.`);
+                        }
+                    }
+
+                    // Redirect to verification page after 3 seconds
+                    setTimeout(() => {
+                        window.location.href = 'verify.html';
+                    }, 3000);
+                } else {
+                    showError(data.error || 'Signup failed');
+                    signupBtn.innerHTML = 'Create Account';
+                    signupBtn.disabled = false;
+                }
+            } catch (error) {
+                showError('Unable to connect to server. Please make sure the backend is running.');
+                signupBtn.innerHTML = 'Create Account';
+                signupBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

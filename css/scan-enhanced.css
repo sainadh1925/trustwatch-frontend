@@ -1,0 +1,324 @@
+/* 
+TrustWatch - Professional Production UI
+Clean, minimal, corporate-ready design
+*/
+
+/* Override the flashy demo styles with professional ones */
+.scan-section {
+    background: #f8f9fa !important;
+    background-image: none !important;
+    animation: none !important;
+    min-height: calc(100vh - 80px);
+    padding: 40px 0;
+}
+
+.scan-section::before {
+    display: none !important;
+}
+
+/* Professional page title */
+.scan-section h1 {
+    color: var(--text-primary) !important;
+    text-shadow: none !important;
+    font-size: 32px !important;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.scan-section>.container>p {
+    color: var(--text-secondary) !important;
+    text-shadow: none !important;
+    font-size: 16px;
+    margin-bottom: 32px;
+}
+
+/* Professional tabs */
+.tabs {
+    background: white !important;
+    backdrop-filter: none !important;
+    border-radius: 8px !important;
+    padding: 4px !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 4px;
+}
+
+.tab {
+    padding: 10px 20px !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    color: var(--text-secondary) !important;
+    cursor: pointer;
+    transition: all 0.2s ease !important;
+}
+
+.tab:hover {
+    color: var(--text-primary) !important;
+    background: var(--bg-secondary) !important;
+    transform: none !important;
+}
+
+.tab.active {
+    color: white !important;
+    background: var(--primary-color) !important;
+    box-shadow: 0 1px 3px rgba(0, 122, 255, 0.3) !important;
+}
+
+/* Professional cards */
+.scan-section .card {
+    background: white !important;
+    backdrop-filter: none !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    padding: 32px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    animation: none !important;
+    transition: box-shadow 0.2s ease !important;
+}
+
+.scan-section .card:hover {
+    transform: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Professional form elements */
+.scan-section input,
+.scan-section textarea,
+.scan-section select {
+    background: white !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+    font-size: 15px !important;
+    transition: all 0.2s ease !important;
+}
+
+.scan-section input:focus,
+.scan-section textarea:focus,
+.scan-section select:focus {
+    background: white !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1) !important;
+    transform: none !important;
+}
+
+/* Professional button */
+.scan-section .btn-primary {
+    background: var(--primary-color) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 24px !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    color: white !important;
+    box-shadow: 0 1px 3px rgba(0, 122, 255, 0.3) !important;
+    transition: all 0.2s ease !important;
+}
+
+.scan-section .btn-primary::before {
+    display: none !important;
+}
+
+.scan-section .btn-primary:hover {
+    background: var(--primary-hover) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3) !important;
+}
+
+.scan-section .btn-primary:active {
+    transform: translateY(0) !important;
+}
+
+/* Professional loading state */
+.loading {
+    background: white !important;
+    backdrop-filter: none !important;
+    border-radius: 12px !important;
+    padding: 48px 32px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.spinner {
+    width: 48px !important;
+    height: 48px !important;
+    border: 3px solid var(--bg-tertiary) !important;
+    border-top-color: var(--primary-color) !important;
+    border-radius: 50% !important;
+    animation: spin 0.8s linear infinite !important;
+    margin: 0 auto 16px !important;
+}
+
+.spinner::after {
+    display: none !important;
+}
+
+.loading p {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: var(--text-primary) !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: unset !important;
+    background-clip: unset !important;
+    animation: none !important;
+}
+
+/* Professional progress bar */
+.scan-progress {
+    width: 100%;
+    height: 4px !important;
+    background: var(--bg-tertiary) !important;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.scan-progress-bar {
+    height: 100%;
+    background: var(--primary-color) !important;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Professional results display */
+.results {
+    background: white !important;
+    backdrop-filter: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid var(--border-color) !important;
+    margin-top: 24px;
+}
+
+/* Professional score circle */
+.score-circle {
+    width: 120px !important;
+    height: 120px !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px !important;
+    font-size: 36px !important;
+    font-weight: 600 !important;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    animation: none !important;
+}
+
+.score-circle::before {
+    display: none !important;
+}
+
+/* Professional risk badges */
+.risk-badge {
+    display: inline-block;
+    padding: 6px 16px !important;
+    border-radius: 20px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: none !important;
+    animation: none !important;
+}
+
+/* Professional indicators */
+.indicators li {
+    padding: 12px 16px !important;
+    margin-bottom: 8px !important;
+    background: var(--bg-secondary) !important;
+    border-left: 3px solid var(--primary-color) !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    animation: none !important;
+    transition: background 0.2s ease !important;
+}
+
+.indicators li:hover {
+    transform: none !important;
+    background: var(--bg-tertiary) !important;
+    box-shadow: none !important;
+}
+
+/* Professional email guide */
+.email-guide {
+    background: #f0f7ff !important;
+    backdrop-filter: none !important;
+    border-radius: 8px !important;
+    padding: 20px !important;
+    margin-top: 24px;
+    border: 1px solid #d0e7ff !important;
+    animation: none !important;
+}
+
+.email-guide h4 {
+    color: var(--primary-color) !important;
+    margin-bottom: 12px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.email-guide ol {
+    margin-left: 20px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.email-guide li {
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
+.email-guide p {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+/* Remove confetti animation */
+.confetti {
+    display: none !important;
+}
+
+/* Remove all fancy animations */
+@keyframes fadeInDown,
+@keyframes fadeInUp,
+@keyframes fadeInScale,
+@keyframes scaleIn,
+@keyframes bounceIn,
+@keyframes slideInLeft,
+@keyframes shimmer,
+@keyframes pulse,
+@keyframes gradientShift,
+@keyframes float,
+@keyframes progressSlide,
+@keyframes confetti-fall {
+    from,
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .scan-section h1 {
+        font-size: 24px !important;
+    }
+
+    .score-circle {
+        width: 100px !important;
+        height: 100px !important;
+        font-size: 28px !important;
+    }
+
+    .scan-section .card {
+        padding: 24px !important;
+    }
+}

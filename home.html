@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - TrustWatch</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <style>
+        /* Home Page Specific Styles */
+        body {
+            background: #F8F9FA;
+        }
+
+        .home-header {
+            background: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #E5E5EA;
+        }
+
+        .home-header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1D1D1F;
+        }
+
+        .home-header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification-icon {
+            font-size: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #FF3B30;
+            color: white;
+            font-size: 10px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .home-content {
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Protected Card */
+        .protected-card {
+            background: linear-gradient(135deg, #1DB5A0 0%, #179B88 100%);
+            border-radius: 20px;
+            padding: 32px 24px;
+            color: white;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(29, 181, 160, 0.3);
+        }
+
+        .shield-icons {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .shield-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .shield-icon svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+
+        .protected-card h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .protected-card p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 24px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Active Protection */
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1D1D1F;
+            margin-bottom: 16px;
+        }
+
+        .protection-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .protection-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .protection-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .protection-icon.blue {
+            background: rgba(79, 124, 255, 0.1);
+        }
+
+        .protection-icon.purple {
+            background: rgba(138, 43, 226, 0.1);
+        }
+
+        .protection-icon.green {
+            background: rgba(52, 199, 89, 0.1);
+        }
+
+        .protection-icon.yellow {
+            background: rgba(255, 149, 0, 0.1);
+        }
+
+        .protection-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1D1D1F;
+            margin-bottom: 2px;
+        }
+
+        .protection-info p {
+            font-size: 12px;
+            color: #86868B;
+        }
+
+        /* Recent Activity */
+        .activity-list {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #F0F0F0;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.danger {
+            background: rgba(255, 59, 48, 0.1);
+        }
+
+        .activity-icon.warning {
+            background: rgba(255, 149, 0, 0.1);
+        }
+
+        .activity-icon.info {
+            background: rgba(79, 124, 255, 0.1);
+        }
+
+        .activity-details h5 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1D1D1F;
+            margin-bottom: 4px;
+        }
+
+        .activity-details p {
+            font-size: 12px;
+            color: #86868B;
+        }
+
+        .activity-time {
+            font-size: 11px;
+            color: #C7C7CC;
+            margin-left: auto;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #E5E5EA;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #86868B;
+            text-decoration: none;
+            font-size: 11px;
+        }
+
+        .nav-item.active {
+            color: #1DB5A0;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="home-header">
+        <div>
+            <h1>TrustWatch</h1>
+            <p style="font-size: 12px; color: #86868B;">Welcome back, <span id="user-name">User</span></p>
+        </div>
+        <div class="user-info">
+            <div class="notification-icon" onclick="window.location.href='notifications.html'">
+                🔔
+                <span class="notification-badge">3</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="home-content">
+        <!-- Protected Status Card -->
+        <div class="protected-card">
+            <div class="shield-icons">
+                <div class="shield-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L4 6v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6l-8-4z" />
+                    </svg>
+                </div>
+                <div class="shield-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 2L4 6v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6l-8-4zm0 18.5c-4.28-1.04-7-5.46-7-10.5V7.5l7-3.5 7 3.5V10c0 5.04-2.72 9.46-7 10.5z" />
+                        <path d="M10.5 13.5l-2-2-1.41 1.41L10.5 16.5l6-6-1.41-1.41z" />
+                    </svg>
+                </div>
+            </div>
+
+            <h2>You are Protected</h2>
+            <p>TrustWatch is actively monitoring all threats</p>
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-value" id="total-scans-home">142</div>
+                    <div class="stat-label">Scans</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="threats-blocked">0</div>
+                    <div class="stat-label">Threats</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="accuracy-rate">98.6%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Protection -->
+        <h3 class="section-title">Active Protection</h3>
+        <div class="protection-grid">
+            <div class="protection-item" onclick="window.location.href='scan.html'">
+                <div class="protection-icon blue">🔍</div>
+                <div class="protection-info">
+                    <h4>Real-Time</h4>
+                    <p>Running</p>
+                </div>
+            </div>
+            <div class="protection-item" onclick="window.location.href='scan.html'">
+                <div class="protection-icon purple">🤖</div>
+                <div class="protection-info">
+                    <h4>AI Powered</h4>
+                    <p>Active</p>
+                </div>
+            </div>
+            <div class="protection-item" onclick="window.location.href='settings.html'">
+                <div class="protection-icon green">🔒</div>
+                <div class="protection-info">
+                    <h4>Encrypted</h4>
+                    <p>Enabled</p>
+                </div>
+            </div>
+            <div class="protection-item" onclick="window.location.href='subscription.html'">
+                <div class="protection-icon yellow">98.6%</div>
+                <div class="protection-info">
+                    <h4>Accuracy</h4>
+                    <p>High</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <h3 class="section-title">Recent Activity</h3>
+        <div class="activity-list" id="recent-activity">
+            <div class="activity-item">
+                <div class="activity-icon danger">⚠️</div>
+                <div class="activity-details">
+                    <h5>Phishing Link Detected</h5>
+                    <p>Flagged and blocked: http://...</p>
+                </div>
+                <div class="activity-time">2m ago</div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon warning">⚡</div>
+                <div class="activity-details">
+                    <h5>Suspect SMS</h5>
+                    <p>Warning sent to device</p>
+                </div>
+                <div class="activity-time">15m ago</div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon info">ℹ️</div>
+                <div class="activity-details">
+                    <h5>Security Tip</h5>
+                    <p>Make sure to enable SMS protection</p>
+                </div>
+                <div class="activity-time">1h ago</div>
+            </div>
+        </div>
+
+        <div style="height: 80px;"></div> <!-- Spacer for bottom nav -->
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="home.html" class="nav-item active">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            </svg>
+            Home
+        </a>
+        <a href="scan.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+            </svg>
+            Scan
+        </a>
+        <a href="dashboard.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+            </svg>
+            Stats
+        </a>
+        <a href="settings.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+            </svg>
+            Profile
+        </a>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+
+        // Check if user is logged in
+        const sessionToken = localStorage.getItem('session_token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        if (!sessionToken) {
+            window.location.href = 'login.html';
+        }
+
+        // Display user name
+        if (user.full_name) {
+            document.getElementById('user-name').textContent = user.full_name;
+        }
+
+        // Load statistics
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_URL}/api/stats`);
+                const stats = await response.json();
+
+                document.getElementById('total-scans-home').textContent = stats.total_scans || 0;
+                document.getElementById('threats-blocked').textContent = stats.phishing_detected || 0;
+                document.getElementById('accuracy-rate').textContent = (stats.detection_rate || 98.6) + '%';
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        loadStats();
+    </script>
+</body>
+
+</html>

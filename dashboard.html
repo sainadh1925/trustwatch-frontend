@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TrustWatch</title>
+    <meta name="description" content="View phishing detection statistics and recent scans">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">🛡️ TrustWatch</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="scan.html">Scan Now</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Dashboard Section -->
+    <section class="scan-section">
+        <div class="container">
+            <h1 class="mb-4">Analytics Dashboard</h1>
+
+            <!-- Statistics Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-scans">0</div>
+                    <div class="stat-label">Total Scans</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="phishing-detected" style="color: var(--danger-color);">0</div>
+                    <div class="stat-label">Threats Detected</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="detection-rate" style="color: var(--success-color);">0%</div>
+                    <div class="stat-label">Detection Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avg-response-time">0ms</div>
+                    <div class="stat-label">Avg Response Time</div>
+                </div>
+            </div>
+
+            <!-- Recent Scans -->
+            <div class="card mt-4">
+                <h2 class="mb-3">Recent Scans</h2>
+                <div id="scans-container">
+                    <div class="loading show">
+                        <div class="spinner"></div>
+                        <p>Loading scan history...</p>
+                    </div>
+                </div>
+                <table class="scans-table hidden" id="scans-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Content</th>
+                            <th>Risk Level</th>
+                            <th>Threat Score</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scans-tbody">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Refresh Button -->
+            <div class="text-center mt-4">
+                <button class="btn btn-primary" onclick="loadDashboard()">Refresh Data</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 TrustWatch. Real-Time AI/ML-Based Phishing Detection System.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // API Base URL
+        const API_URL = 'http://localhost:5000';
+
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                // Load statistics
+                const statsResponse = await fetch(`${API_URL}/api/stats`);
+                const stats = await statsResponse.json();
+
+                document.getElementById('total-scans').textContent = stats.total_scans || 0;
+                document.getElementById('phishing-detected').textContent = stats.phishing_detected || 0;
+                document.getElementById('detection-rate').textContent = (stats.detection_rate || 0) + '%';
+                document.getElementById('avg-response-time').textContent =
+                    (stats.avg_response_time || 0).toFixed(2) + 'ms';
+
+                // Load recent scans
+                const scansResponse = await fetch(`${API_URL}/api/scans/recent?limit=10`);
+                const scansData = await scansResponse.json();
+
+                const tbody = document.getElementById('scans-tbody');
+                tbody.innerHTML = '';
+
+                if (scansData.scans && scansData.scans.length > 0) {
+                    scansData.scans.forEach(scan => {
+                        const row = document.createElement('tr');
+
+                        // Truncate content
+                        const content = scan.content.length > 50
+                            ? scan.content.substring(0, 50) + '...'
+                            : scan.content;
+
+                        row.innerHTML = `
+                            <td>${scan.scan_type.toUpperCase()}</td>
+                            <td>${content}</td>
+                            <td><span class="risk-badge risk-${scan.risk_level.toLowerCase()}">${scan.risk_level}</span></td>
+                            <td>${scan.threat_score}</td>
+                            <td>${new Date(scan.timestamp).toLocaleString()}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+
+                    document.getElementById('scans-table').classList.remove('hidden');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No scans yet</td></tr>';
+                    document.getElementById('scans-table').classList.remove('hidden');
+                }
+
+                // Hide loading
+                document.querySelector('#scans-container .loading').classList.remove('show');
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                document.querySelector('#scans-container .loading p').textContent =
+                    'Error loading data. Make sure the backend server is running.';
+            }
+        }
+
+        // Load dashboard on page load
+        window.addEventListener('DOMContentLoaded', loadDashboard);
+    </script>
+</body>
+
+</html>

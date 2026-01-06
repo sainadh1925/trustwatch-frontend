@@ -1,0 +1,7 @@
+// API Configuration
+// Automatically detects if running locally or on Vercel
+const API_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000'
+    : window.location.origin;
+
+console.log('API URL:', API_URL);

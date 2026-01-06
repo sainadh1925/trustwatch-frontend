@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - TrustWatch</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <style>
+        body {
+            background: #F8F9FA;
+            padding-bottom: 80px;
+        }
+
+        .settings-header {
+            background: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid #E5E5EA;
+        }
+
+        .settings-header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .settings-content {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .settings-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .settings-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1D1D1F;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #F0F0F0;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info h4 {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1D1D1F;
+            margin-bottom: 4px;
+        }
+
+        .setting-info p {
+            font-size: 12px;
+            color: #86868B;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #E5E5EA;
+            transition: 0.3s;
+            border-radius: 28px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked+.toggle-slider {
+            background-color: #1DB5A0;
+        }
+
+        input:checked+.toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 14px;
+            background: #FF3B30;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .logout-btn:hover {
+            background: #D70015;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="settings-header">
+        <button class="back-button" onclick="window.location.href='home.html'" style="position: static;">←</button>
+        <h1>Settings</h1>
+    </div>
+
+    <div class="settings-content">
+        <!-- Account Section -->
+        <div class="settings-section">
+            <h3>Account</h3>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4 id="user-name-settings">Loading...</h4>
+                    <p id="user-email-settings">Loading...</p>
+                </div>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Subscription Plan</h4>
+                    <p id="subscription-plan">Free</p>
+                </div>
+                <button class="btn btn-primary" onclick="window.location.href='subscription.html'"
+                    style="padding: 8px 16px; font-size: 14px;">Upgrade</button>
+            </div>
+        </div>
+
+        <!-- Protection Settings -->
+        <div class="settings-section">
+            <h3>Enable Protection</h3>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>📱 SMS Messages</h4>
+                    <p>Scan text messages for phishing and smishing attacks</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="sms-protection">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>📧 Email Access</h4>
+                    <p>Analyze emails for malicious links and attachments</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="email-protection">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>🔔 Notifications</h4>
+                    <p>Get real-time alerts about detected threats</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="notifications" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Privacy -->
+        <div class="settings-section">
+            <h3>Privacy</h3>
+            <p style="font-size: 12px; color: #86868B; line-height: 1.6;">
+                Your data stays on your device. We only analyze content locally and never send data to third parties.
+            </p>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+        const sessionToken = localStorage.getItem('session_token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        if (!sessionToken) {
+            window.location.href = 'login.html';
+        }
+
+        // Display user info
+        document.getElementById('user-name-settings').textContent = user.full_name || 'User';
+        document.getElementById('user-email-settings').textContent = user.email || '';
+        document.getElementById('subscription-plan').textContent = user.subscription_plan === 'premium' ? 'Premium' : 'Free';
+
+        // Load settings
+        async function loadSettings() {
+            try {
+                const response = await fetch(`${API_URL}/api/user/settings`, {
+                    headers: {
+                        'Authorization': `Bearer ${sessionToken}`
+                    }
+                });
+                const settings = await response.json();
+
+                document.getElementById('sms-protection').checked = settings.sms_protection || false;
+                document.getElementById('email-protection').checked = settings.email_protection || false;
+                document.getElementById('notifications').checked = settings.notifications !== false;
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // Save settings when toggled
+        async function saveSettings() {
+            const settings = {
+                sms_protection: document.getElementById('sms-protection').checked,
+                email_protection: document.getElementById('email-protection').checked,
+                notifications: document.getElementById('notifications').checked
+            };
+
+            try {
+                await fetch(`${API_URL}/api/user/settings`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${sessionToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(settings)
+                });
+            } catch (error) {
+                console.error('Error saving settings:', error);
+            }
+        }
+
+        // Add event listeners to toggles
+        document.getElementById('sms-protection').addEventListener('change', saveSettings);
+        document.getElementById('email-protection').addEventListener('change', saveSettings);
+        document.getElementById('notifications').addEventListener('change', saveSettings);
+
+        // Logout function
+        async function logout() {
+            try {
+                await fetch(`${API_URL}/api/auth/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ session_token: sessionToken })
+                });
+            } catch (error) {
+                console.error('Error logging out:', error);
+            }
+
+            localStorage.removeItem('session_token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        loadSettings();
+    </script>
+</body>
+
+</html>
